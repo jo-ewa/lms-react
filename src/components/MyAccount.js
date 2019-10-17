@@ -2,13 +2,33 @@ import React from 'react';
 import Cookies from 'js-cookie';
 import Axios from 'axios';
 
-export default class MyAccount extends React.Component {
+class UnauthorizedError extends React.Component {
+    render() {
+        return (
+            <div id="UnauthorizedErorr">
+                Username or password incorrect. User is unauthorized.
+            </div>
+        );
+    }
+}
+
+class AccountInfo extends React.Component {
+    render() {
+        return (
+            <div>
+                Account Information
+            </div>
+        );
+    }
+}
+
+class LoginForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loggedIn: Cookies.get('session'),
             email: '',
-            password: ''
+            password: '',
+            unauthorizedError: false
         }
 
         this.logIn = this.logIn.bind(this);
@@ -18,12 +38,14 @@ export default class MyAccount extends React.Component {
 
     logIn(event) {
         event.preventDefault();
-        console.log(event);
-        console.log(this);
-        Axios.post(`${process.env.REACT_APP_API_URL}/users/sign_in`, {email: this.state.email, password: this.state.password})
+        let self = this;
+        Axios.post(`${process.env.REACT_APP_API_URL}/users/authenticate`, {email: this.state.email, password: this.state.password})
             .then(response => {
-                console.log(response);
-            })
+                Cookies.set("auth-token", response.data.token);
+                Cookies.set("auth-token-expiration", response.data.expiration);
+            }).catch(error => {
+                self.setState({unauthorizedError: true});
+            });
     }
 
     changeEmail(event) {
@@ -48,6 +70,24 @@ export default class MyAccount extends React.Component {
                     </div>
                     <input type="submit" />
                 </form>
+                { this.state.unauthorizedError ? <UnauthorizedError /> : null }
+            </div>
+        );
+    }
+}
+
+export default class MyAccount extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            loggedIn: Cookies.get('auth-token') ? true : false,
+        }
+    }
+
+    render () {
+        return (
+            <div>
+                {this.state.loggedIn ? <AccountInfo /> : <LoginForm />}
             </div>
         );
     }
