@@ -7,6 +7,7 @@ import Navbar from './components/Navbar';
 import NewBooks from './components/NewBooks';
 import MyAccount from './components/MyAccount';
 import AppContext from './AppContext';
+import AdminPage from './components/admin/AdminPage';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -47,6 +48,9 @@ export default class App extends React.Component {
                         </Route>
                         <Route exact path="/my-account">
                             <MyAccount />
+                        </Route>
+                        <Route exact path="/admin">
+                            <AdminPage />
                         </Route>
                     </Navbar>
                 </AppContext.Provider>
