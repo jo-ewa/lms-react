@@ -2,16 +2,7 @@ import React from "react";
 import Axios from 'axios';
 
 import AppContext from '../AppContext';
-
-class UnauthorizedError extends React.Component {
-    render() {
-        return (
-            <div id="UnauthorizedErorr">
-                Username or password incorrect. User is unauthorized.
-            </div>
-        );
-    }
-}
+import Error from './Error';
 
 export default class LoginForm extends React.Component {
     constructor(props) {
@@ -19,7 +10,8 @@ export default class LoginForm extends React.Component {
         this.state = {
             email: '',
             password: '',
-            unauthorizedError: false
+            unauthorizedError: false,
+            generalError: false,
         }
     }
 
@@ -30,9 +22,12 @@ export default class LoginForm extends React.Component {
                 let {token, expiration, user} = response.data;
                 context.logUserIn(token, expiration, user)
             }).catch(error => {
-                // TODO figure out how to check if this is a 401
-                console.log(error)
-                this.setState({unauthorizedError: true});
+                if (error.response && error.response.status === 401) {
+                    this.setState({unauthorizedError: true});
+                } else {
+                    this.setState({generalError: true});
+                    console.error(error);
+                }
             });
     }
 
@@ -60,7 +55,7 @@ export default class LoginForm extends React.Component {
                             </div>
                             <input type="submit" />
                         </form>
-                        { this.state.unauthorizedError ? <UnauthorizedError /> : null }
+                        { this.state.unauthorizedError ? <Error message="Username or password incorrect." /> : <Error message="A network error ocurred." /> }
                     </div>
                 )}
             </AppContext.Consumer>
