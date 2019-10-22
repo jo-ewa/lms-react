@@ -1,5 +1,8 @@
 import React from "react";
 import Axios from "axios";
+import {
+    Link
+} from "react-router-dom";
 
 export default class BooksAdmin extends React.Component {
     constructor(props) {
@@ -23,10 +26,28 @@ export default class BooksAdmin extends React.Component {
 
     render() {
         return (
-            <div>
-                <ul>
-                    {this.state.books.map(b => <li>{b.title}</li>)}
-                </ul>
+            <div className='tab-body'>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.state.books.map(b => 
+                        <tr>
+                            <td>{b.title}</td>
+                            <td>
+                                <nav class="nav">
+                                    <Link className="nav-link" to="/admin/books/:id/edit">Edit</Link>
+                                    <Link className="nav-link" to="/admin/books/:id/delete">Delete</Link>
+                                </nav>
+                            </td>
+                        </tr>
+                        )}
+                    </tbody>
+                </table>
             </div>
         );
     }

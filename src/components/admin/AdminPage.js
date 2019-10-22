@@ -6,6 +6,7 @@ import {
     NavLink
 } from "react-router-dom";
 import "./AdminPage.css";
+import BooksAdmin from "./BooksAdmin";
 
 export default class AdminPage extends React.Component {
     render() {
@@ -26,11 +27,9 @@ export default class AdminPage extends React.Component {
                         </ul>
                     </nav>
                     <Switch>
-                        <div>
-                            <Route exact path="/admin/books">
-                                Books
-                            </Route>
-                        </div>
+                        <Route exact path="/admin/books">
+                            <BooksAdmin />
+                        </Route>
                     </Switch>
                 </Router>
             </div>
